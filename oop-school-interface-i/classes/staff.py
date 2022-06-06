@@ -1,10 +1,6 @@
 from classes.person import Person
 import csv
 class Staff(Person):
-    pass
-    # def __init__(self, employee_id):
-    #     super().__init__
-
     def all_staff():
 
         individual_staff = []
