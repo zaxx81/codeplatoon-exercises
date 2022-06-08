@@ -1,3 +1,4 @@
+from argparse import ArgumentError
 import csv
 import os.path
 from classes.owner import Owner
@@ -9,17 +10,15 @@ class Account:
     self.balance = balance
     self.open_date = open_date
     self.owner = None
+    self.minimum_balance = 0
     self.check_min()
     
-  # Does not allow a negative opening balance. Will set balance to $0 instead
   def check_min(self):
     try:
-      if int(self.balance) < 0:
-        raise Exception(f'Opening Balance Error: Balance may not be negative')
-      print(f'Creating a new account {self.id} with a starting balance of ${self.balance}')
+      if int(self.balance) < self.minimum_balance:
+        raise ArgumentError(f'Opening Balance Error: Balance may not be negative')
     except:
-      self.balance = 0
-      print(f'Creating a new account {self.id} with a starting balance of ${self.balance}')
+      print('Sorry, you need at least ${:,.2f} to open an account'.format(self.minimum_balance))
   
   def __str__(self) -> str:
     return f'Account ID: {self.id}, Balance: {self.balance}'
@@ -32,7 +31,8 @@ class Account:
       self.balance -= amount
       self.show_balance()
     except:
-      print(f'Invalid withdrawal amount! Your balance is ${self.balance}.')
+      print('Invalid withdrawal amount!')
+      self.show_balance()
 
   def deposit(self, amount):
     print(f'Depositing ${amount} from your account...')
@@ -40,12 +40,10 @@ class Account:
     self.show_balance()
 
   def show_balance(self):
-    print(f'Your current balance is ${self.balance}')
+    output = '${:,.2f}'.format(self.balance)
+    print(f'Your current balance is {output}')
 
-  # def set_owner(self, owner):
-  #   self.owner = owner
-
-  # Class Methods
+  @staticmethod
   def all_accounts():
     accounts = []
 
@@ -55,5 +53,4 @@ class Account:
         reader = csv.reader(csvfile)
         for row in reader:
             accounts.append(Account(*row))
-    
     return accounts

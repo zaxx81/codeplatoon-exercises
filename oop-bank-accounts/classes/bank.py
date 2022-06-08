@@ -1,4 +1,3 @@
-from asyncio.constants import ACCEPT_RETRY_DELAY
 import csv, os
 from classes.account import Account
 from classes.owner import Owner
@@ -10,6 +9,12 @@ class Bank:
     self.accounts = Account.all_accounts()
     self.owners = Owner.all_owners()
     self.link_accounts()
+    # Logging actions to console
+    print('Initializing bank from CSV records...')
+    print(f'{len(self.accounts)} account created...')
+    print(f'{len(self.owners)} account owners created...')
+    print('Accounts linked to owners...')
+    print('Initialization complete...')
 
 
   def link_accounts(self):
@@ -23,8 +28,6 @@ class Bank:
   def account_pair(self, account_id, owner_id):
     pair_account = self.find_account(int(account_id))
     pair_owner = self.find_owners(int(owner_id))
-    print(pair_account)
-    print(pair_owner)
     pair_account.owner = pair_owner
 
   def find_account(self, id):
