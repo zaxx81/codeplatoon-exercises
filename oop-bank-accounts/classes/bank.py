@@ -1,6 +1,5 @@
 from asyncio.constants import ACCEPT_RETRY_DELAY
 import csv, os
-import imp
 from classes.account import Account
 from classes.owner import Owner
 

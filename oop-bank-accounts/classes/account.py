@@ -6,18 +6,20 @@ class Account:
 
   def __init__(self, id, balance, open_date) -> None:
     self.id = int(id)
-    self.balance = 0
+    self.balance = balance
     self.open_date = open_date
     self.owner = None
+    self.check_min()
     
-    # Does not allow a negative opening balance. Will set balance to $0 instead
+  # Does not allow a negative opening balance. Will set balance to $0 instead
+  def check_min(self):
     try:
-      if int(balance) < 0:
+      if int(self.balance) < 0:
         raise Exception(f'Opening Balance Error: Balance may not be negative')
-      self.balance = int(balance)
       print(f'Creating a new account {self.id} with a starting balance of ${self.balance}')
     except:
-      print(f'Creating a new account {self.id} with a starting balance of {self.balance}')
+      self.balance = 0
+      print(f'Creating a new account {self.id} with a starting balance of ${self.balance}')
   
   def __str__(self) -> str:
     return f'Account ID: {self.id}, Balance: {self.balance}'
