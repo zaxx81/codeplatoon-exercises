@@ -39,8 +39,7 @@ def menu(obj):
     return False
 
   def option_exit():
-    print('Exiting...')
-    return True
+    return obj.save_exit()
 
   def default():
     return 'Invalid option!'

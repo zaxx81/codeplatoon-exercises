@@ -1,4 +1,4 @@
-import functools
+import functools, csv, os
 from classes.expenses import Expenses
 
 class Budget:
@@ -74,3 +74,27 @@ class Budget:
       print(f'{categories}: {cat_amount_str} ({cat_percentage_str})')
     
     input('Press any key to go back to the main menu')
+
+  def save_exit(self):
+    choice = input('Exiting...would you like to save expenses? [y/n]')
+    if (choice.lower() == 'y') or (choice.lower() == 'yes'):
+      print('Saving...')
+      my_path = os.path.abspath(os.path.dirname(__file__))
+      my_file = '../data/expenses.csv'
+      path = os.path.join(my_path, my_file)
+      
+      with open(path, 'w', newline='') as csvfile:
+        data = csv.writer(csvfile)
+        data.writerow(['description', 'category', 'amount'])
+
+        for expense in self.transactions:
+          row = [expense.description, expense.category, expense.amount]
+          data.writerow(row)
+
+      print('Exiting...')
+      return True
+
+    elif (choice.lower() == 'n') or (choice.lower() == 'no'):
+        return True
+    else:
+      return False
