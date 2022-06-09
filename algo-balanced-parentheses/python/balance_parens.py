@@ -1,31 +1,31 @@
-from unittest import result
+def balance_parens(input_str):
+    result = list(input_str)
 
+    result = match_pairs(result[:], '(', ')')
+    result.reverse()
+    
+    result = match_pairs(result[:], ')', '(')
+    result.reverse()
 
-def balance_parens(str):
-    # split str into list
+    result = ''.join(result)
 
-    # match_pairs on ( and )
-
-    # reverse list
-
-    # match_paris on ) and (
-
-    # return result
+    print(result)
+    return result
 
 # match_pairs function
-def match_pairs(list, open, close):
-# define result and match_count
+def match_pairs(input_list, open_char, close_char):
     result = []
     match_count = 0
 
-# for each char in arr
-
-
-# if char == open_char append to result and match_count ++
-
-# if char == close_char and match_count > 0 append to result and match_count ++
-
-# if char != ( or ) append to result
-
-# return result
-
+    for char in input_list:
+        if char == open_char:
+            result.append(char)
+            match_count += 1
+        if char == close_char:
+            if match_count > 0:
+                result.append(char)
+                match_count -= 1
+        if (char != open_char) and (char != close_char):
+            result.append(char)
+    
+    return result
