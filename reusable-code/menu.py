@@ -1,4 +1,4 @@
-def menu():
+def menu(obj):
   
   # ---Change the values for your menu options---
   # Strings for menu options

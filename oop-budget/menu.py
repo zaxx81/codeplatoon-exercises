@@ -1,12 +1,14 @@
-def menu():
+
+def menu(obj):
   
   # ---Change the values for your menu options---
   # Strings for menu options
   menu_options = {
-    1: 'Option 1',
-    2: 'Option 2',
-    3: 'Option 3',
-    4: 'Exit',
+    1: 'Set Montly Income',
+    2: 'Add Expense',
+    3: 'Remove Expense',
+    4: 'Show Budget',
+    5: 'Exit',
   }
   # ---------------------------------------------
 
@@ -14,19 +16,25 @@ def menu():
   # Blocks to execute when menu option is chosen
   def option1():
     # Begin Option Code
-    print('You chose option 1')
+    obj.update_income()
     # End Option Code
     return False
 
   def option2():
     # Begin Option Code
-    print('You chose option 2')
+    obj.add_expense()
     # End Option Code
     return False
 
   def option3():
     # Begin Option Code
-    print('You chose option 3')
+    obj.remove_expense()
+    # End Option Code
+    return False
+
+  def option4():
+    # Begin Option Code
+    obj.show_budget()
     # End Option Code
     return False
 
@@ -44,7 +52,8 @@ def menu():
     1: option1,
     2: option2,
     3: option3,
-    4: option_exit,
+    4: option4,
+    5: option_exit,
   }
   # ---------------------------------------------
 
