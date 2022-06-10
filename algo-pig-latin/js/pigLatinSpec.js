@@ -25,10 +25,8 @@ console.log(pig.translate("I go to Apple University") === 'Iay ogay otay Appleay
 
 console.log(pig.translate("I go to the University of Maryland") === 'Iay ogay otay ethay Universityay ofay Arylandmay')
 
-console.log(pig.translate("Hi, I'm Zach") === "Ihay, I'may Achzay")
+console.log(pig.translate("Hi, I'm Zack") === "Ihay, I'may Ackzay")
 
-console.log(pig.translate("Hi, I'm Zach.\nHow are you?") === "Ihay, I'may Achzay.\nOwhay areay ouyay?")
-
-// write a test asserting that capitalized words are still capitalized
-// (but with a different initial capital letter, of course) retain the
-// punctuation from the original phrase
+console.log('\n-Compare output manually-\n')
+console.log(pig.translate("Hi, I'm Zack.\nHow are you?"))
+console.log("\nShould looke like this:\n\nIhay, I'may Ackzay.\nOwhay areay ouyay?\n")
