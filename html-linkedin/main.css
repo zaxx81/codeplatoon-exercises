@@ -1,1 +1,65 @@
-/* write styles here */
+:root {
+  --artdeco-typography-mono: SF Mono,Consolas,Roboto Mono,Noto Mono,Droid Mono,Fira Mono,Ubuntu Mono,Oxygen Mono,Lucida Console,Menlo,Monaco,monospace;
+  --artdeco-typography-sans: -apple-system,system-ui,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Fira Sans,Ubuntu,Oxygen,Oxygen Sans,Cantarell,Droid Sans,Apple Color Emoji,Segoe UI Emoji,Segoe UI Emoji,Segoe UI Symbol,Lucida Grande,Helvetica,Arial,sans-serif;
+  --artdeco-typography-serif: Noto Serif,Droid Serif,Georgia,serif;
+}
+
+body {
+  background-color: #F3F2EF;
+}
+
+.container {
+  width: 782px;
+}
+
+.section {
+  background-color: white;
+  padding: 12px;
+  margin-bottom: 6px;
+  border-radius: 10px;
+  border: 1px solid #e8e8e8;
+}
+
+.outer {
+  background-color: #F3F2EF;
+  padding: 0px;
+  margin: 0px;
+  border: none;
+  border-radius: 0px;
+
+}
+
+.indent {
+  padding-left: 20px;
+}
+
+.profile-bg {
+  background-image: url("assets/profile-background.jpeg");
+  width: 100%;
+  height: 195px;
+  background-repeat: no-repeat;
+}
+
+h1 {
+  font: bold 20px var(--artdeco-typography-sans);
+  line-height: 1.0;
+}
+
+h2 {
+  font: bold 16px var(--artdeco-typography-sans);
+  line-height: .9;
+}
+
+h3, h4 {
+  font: bold 14px var(--artdeco-typography-sans);
+  line-height: .8;
+}
+
+h4 {
+  font-style: italic;
+  line-height: .8;
+}
+
+p {
+  font: 14px var(--artdeco-typography-sans);
+}
