@@ -1,41 +1,80 @@
 console.log("Let's Catch a Pokemon!")
-const catchButton = document.querySelector('.catchButton')
-const centerState = document.getElementById('centerStage')
+console.dir(document)
+const pokeball = document.getElementById('pokeball')
+const centerStage = document.getElementById('center-stage')
 
 const getMon = async () => {
-  const pokemonURL = "https://pokeapi.co/api/v2/pokemon"
-  let limit = '?limit=1'
+  const pokemonCaught = []
+  const pokemonURL = 'https://pokeapi.co/api/v2/pokemon'
+  const typesURL = 'https://pokeapi.co/api/v2/type/'
+  
+  // Get the count of the pokemon API Resource
+  let limit = '?limit=1' // setting limit to 1 mins data return of default 20
   let response = await axios.get(pokemonURL + limit)
+  // Sets the pokemon count and changes the limit to request all pokemon
   let count = response.data.count
   limit = `?limit=${count}`
-  console.log(`Number of Pokemon: ${count}`)
 
-  // Pokemon Array. Each element contains 'name' and 'url'
+  // Get all pokemon data
   response = await axios.get(pokemonURL + limit)
   const pokemonData = response.data.results
-
-  // Setup for myPokemonDiv
-  const randomIndex = Math.floor(Math.random() * (count - 1))
-  const randomPokemon = pokemonData[randomIndex]
-
+  
+  // Catch a random pokemon
+  let randomIndex = Math.floor(Math.random() * (count - 1))
+  let randomPokemon = pokemonData[randomIndex]
   response = await axios.get(randomPokemon.url)
-  const myPokemon = response.data
-  console.log(myPokemon)
-  console.log(myPokemon.id)
-  console.log(myPokemon.name)
   
-  let img = document.createElement('img')
-  img.src = myPokemon.sprites.front_default
-  img.alt = 'My Pokemon'
   
-  centerState.innerHTML = ""
-  centerState.append(img)
+  // Adding first pokemon to the pokemonCaught[]
+  pokemonCaught.push(response.data)
+  
+  // Determine types of the first pokemon to catch 5 more of the same types
+  let pokemonTypes = []
+  for (let type of pokemonCaught[0].types) {
+    pokemonTypes.push(type.type.name)
+  }
 
-  // Get 5 more pokemon
+  // Get all pokemon of the same type as the first
+  const pokemonPool = []
+  for (let type of pokemonTypes) {
+    response = await axios.get(typesURL + type)
+    pokemonPool.push(...response.data.pokemon)
+  }
 
-  // Create Carousel with all the pokemon
+  // Catch 5 random pokemon from the pokemonPool (*same type as first pokemon)
+  for (let i = 0; i < 5; i++) {
+    randomIndex = Math.floor(Math.random() * (pokemonPool.length))
+    randomPokemon = pokemonPool[randomIndex].pokemon
+    response = await axios.get(randomPokemon.url)
+    pokemonCaught.push(response.data)
+  }
 
+  console.log(pokemonCaught)
 
+  // Setup for each pokemon info
+  // Display info for each pokemon
+  centerStage.innerHTML = '<div class="title-text">Here are the Pokemon that you caught!</div>'
+  centerStage.innerHTML += '<div class="card-columns"></div>'
+
+  for (let pokemon of pokemonCaught) {
+    let pokemonName = pokemon.name
+  .slice(0, 1).toUpperCase() + pokemon.name.slice(1)
+
+    let pokemonTypes = []
+    for (let type of pokemon.types) {
+      pokemonTypes.push(type.type.name)
+    }
+    let pokemonSpriteURL = pokemon.sprites.front_default
+    
+    let htmlCard = `<div class="card" style="width: 18rem;">
+    <img src="${pokemonSpriteURL}" class="card-img-top pokemon-img" alt="Pokemon Image">
+    <div class="card-body" style="height: 100px;">
+      <p class="card-title card-text">${pokemonName}</p>
+      <p class="card-text card-subtext">(types: ${pokemonTypes.join(', ')})</p>
+    </div>
+  </div>`
+  centerStage.querySelector('.card-columns').innerHTML += htmlCard
+  }
 }
 
-catchButton.addEventListener('click', getMon)
+pokeball.addEventListener('click', getMon)
