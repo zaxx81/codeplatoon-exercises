@@ -28,7 +28,7 @@ body {
 }
 
 .logo {
-  background-image: url('background.png');
+  background-image: url('assets/background.png');
   margin: 15px;
   width: 500px;
   height: 500px;
@@ -46,7 +46,7 @@ body {
 }
 
 .pokemon-img {
-  background-image: url('background.png');
+  background-image: url('assets/background.png');
   background-repeat: no-repeat;
   background-size: contain;
   box-shadow: 0px 0px 3px 3px var(--pokemon-yellow);

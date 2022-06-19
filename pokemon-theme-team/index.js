@@ -1,6 +1,6 @@
 console.log("Let's Catch a Pokemon!")
 console.dir(document)
-const pokeball = document.getElementById('pokeball')
+let pokeball = document.getElementById('pokeball')
 const centerStage = document.getElementById('center-stage')
 
 const getMon = async () => {
@@ -75,6 +75,13 @@ const getMon = async () => {
   </div>`
   centerStage.querySelector('.card-columns').innerHTML += htmlCard
   }
+
+  centerStage.innerHTML += `<p>
+  <input type="image" id="pokeball" alt="pokeball" src="assets/pokeball.png" width="96px" height="96px">
+</p>`
+
+  pokeball = document.getElementById('pokeball')
+  pokeball.addEventListener('click', getMon)
 }
 
 pokeball.addEventListener('click', getMon)
