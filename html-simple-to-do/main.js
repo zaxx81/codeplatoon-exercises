@@ -1,13 +1,19 @@
 /* DOM Variables */
-let form = document.getElementById('addForm')
-let itemList = document.getElementById('items')
-let filter = document.getElementById('filter')
-let clear = document.getElementById('clear-filter')
+const form = document.getElementById('addForm')
+const draggableList = document.getElementById('draggable-list')
+const filter = document.getElementById('filter')
+const clear = document.getElementById('clear-filter')
+const itemTextField = document.getElementById('item')
+
+const toDoItems = ['Eat', 'Sleep', 'Code']
+const listItems = [];
+let dragStartIndex;
+createList()
 
 /* Event Listeners */
 form.addEventListener('submit', addItem)
-itemList.addEventListener('click', completeItem)
-itemList.addEventListener('click', removeItem)
+draggableList.addEventListener('click', completeItem)
+draggableList.addEventListener('click', removeItem)
 filter.addEventListener('keyup', filterItems)
 clear.addEventListener('click', clearFilter)
 
@@ -16,32 +22,29 @@ clear.addEventListener('click', clearFilter)
 // Add Item Function
 function addItem(e) {
   e.preventDefault()
-
-  // Get the input value from the event
-  let newItem = document.getElementById('item').value
-
-  // Create a new <li> with input
-  let newLi = document.createElement('li')
-  newLi.className = 'list-group-item'
-  newLi.appendChild(document.createTextNode(newItem))
-
-  // Create the delete icon
-  let newDelIcon = document.createElement('i')
-  newDelIcon.className = 'bi-trash float-end'
-  newLi.appendChild(newDelIcon)
-
-  // Create the complete icon
-  let newCompIcon = document.createElement('i')
-  newCompIcon.className = 'bi-check-square-fill float-end pe-1'
-  newLi.appendChild(newCompIcon)
-
-  itemList.appendChild(newLi)
+  let item = itemTextField.value
+  let index = toDoItems.length
+  toDoItems.push(item)
+  
+  const listItem = document.createElement('li')
+  listItem.className = 'list-group-item'
+  listItem.setAttribute('data-index', index)
+  listItem.innerHTML = `
+    <div class="draggable" draggable="true">
+      <spand class="item-description">${item}</spand>
+      <i class="bi-trash float-end"></i>
+      <i class="bi-check-square-fill float-end pe-1"></i>
+    </div>
+  `
+  listItems.push(listItem)
+  draggableList.appendChild(listItem)
+  document.getElementById('item').value = ""
 }
 
 // Complete Item Function
 function completeItem(e) {
   if (e.target.classList.contains('bi-check-square-fill')) {
-    if (e.target.parentElement.firstChild.data == 'Code') {
+    if (e.target.previousElementSibling.previousElementSibling.textContent.toLowerCase() == 'code') {
       alert("Coding is never finished!")
     } else {
       if (e.target.parentElement.classList.contains('text-decoration-line-through')) {
@@ -57,12 +60,12 @@ function completeItem(e) {
 // Remove Item Function
 function removeItem(e) {
   if (e.target.classList.contains('bi-trash')) {
-    if (e.target.parentElement.firstChild.data == 'Code') {
+    if (e.target.previousElementSibling.textContent.toLowerCase() == 'code') {
       alert("Coding is never finished!")
     } else {
       if (confirm('Are you sure?')) {
-        let li = e.target.parentElement
-        itemList.removeChild(li)
+        let listItem = e.target.parentElement.parentElement
+        draggableList.removeChild(listItem)
       }
     }
   }
@@ -72,13 +75,16 @@ function removeItem(e) {
 function filterItems(e) {
   // Adds a clear filter button
   clear.style.display = 'block'
-
+  console.log(e)
   // Convert filter text to lowercase
   let text = e.target.value
-  let items = itemList.getElementsByTagName('li')
+  let items = draggableList.getElementsByTagName('li')
   // Convert Items from HTML Collection to an Array
   Array.from(items).forEach( (item) => {
-    let itemName = item.firstChild.textContent
+    
+    let itemName = item
+      .getElementsByClassName('item-description')[0]
+      .textContent
     let re = new RegExp(text, 'gi')
     if (re.test(itemName)) {
       item.style.display = 'block'
@@ -94,9 +100,26 @@ function clearFilter(e) {
     filter.value = ""
     clear.style.display = 'none'
     
-    let items = itemList.getElementsByTagName('li')
+    let items = draggableList.getElementsByTagName('li')
     Array.from(items).forEach( (item) => {
       item.style.display = 'block'
     })
   }
+}
+
+function createList() {
+  [...toDoItems].forEach( (item, index) => {
+    const listItem = document.createElement('li')
+    listItem.className = 'list-group-item'
+    listItem.setAttribute('data-index', index)
+    listItem.innerHTML = `
+      <div class="draggable" draggable="true">
+        <span class="item-description">${item}</span>
+        <i class="bi-trash float-end"></i>
+        <i class="bi-check-square-fill float-end pe-1"></i>
+      </div>
+    `
+    listItems.push(listItem)
+    draggableList.appendChild(listItem)
+  })
 }
