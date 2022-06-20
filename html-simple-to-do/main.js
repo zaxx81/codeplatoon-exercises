@@ -6,7 +6,7 @@ const clear = document.getElementById('clear-filter')
 const itemTextField = document.getElementById('item')
 
 const toDoItems = ['Eat', 'Sleep', 'Code']
-const listItems = [];
+let listItems = [];
 let dragStartIndex;
 createList()
 
@@ -31,6 +31,7 @@ function addItem(e) {
   listItem.setAttribute('data-index', index)
   listItem.innerHTML = `
     <div class="draggable" draggable="true">
+      <i class="bi-grip-vertical"></i>  
       <spand class="item-description">${item}</spand>
       <i class="bi-trash float-end"></i>
       <i class="bi-check-square-fill float-end pe-1"></i>
@@ -114,6 +115,7 @@ function createList() {
     listItem.setAttribute('data-index', index)
     listItem.innerHTML = `
       <div class="draggable" draggable="true">
+        <i class="bi-grip-vertical"></i>
         <span class="item-description">${item}</span>
         <i class="bi-trash float-end"></i>
         <i class="bi-check-square-fill float-end pe-1"></i>
@@ -121,5 +123,56 @@ function createList() {
     `
     listItems.push(listItem)
     draggableList.appendChild(listItem)
+  })
+
+  addEventListeners()
+}
+
+function dragStart() {
+  dragStartIndex = +this.closest('li').getAttribute('data-index')
+}
+
+function dragEnter() {
+  this.parentElement.classList.add('over')
+}
+
+function dragLeave() {
+  this.parentElement.classList.remove('over')
+}
+
+function dragOver(e) {
+  e.preventDefault()
+}
+
+function dragDrop() {
+  const dragEndIndex = +this.getAttribute('data-index')
+  moveItems(dragStartIndex, dragEndIndex)
+  
+  this.classList.remove('over')
+}
+
+function moveItems(fromIndex, toIndex) {
+  listItems = [...draggableList.querySelectorAll('li')]
+  console.log(listItems)
+  const item = listItems[fromIndex]
+  
+  draggableList.removeChild(item)
+  draggableList.insertBefore(item, draggableList.children[toIndex])
+  listItems = [...draggableList.querySelectorAll('li')]
+}
+
+function addEventListeners() {
+  const draggables = document.querySelectorAll('.draggable')
+  const dragListItems = document.querySelectorAll('.draggable-list li')
+
+  draggables.forEach(draggable => {
+    draggable.addEventListener('dragstart', dragStart)
+  })
+  
+  dragListItems.forEach(item => {
+    item.addEventListener('dragover', dragOver)
+    item.addEventListener('drop', dragDrop)
+    item.addEventListener('dragenter', dragEnter)
+    item.addEventListener('dragleave', dragLeave)
   })
 }
