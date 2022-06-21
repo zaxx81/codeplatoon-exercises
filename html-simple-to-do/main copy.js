@@ -30,11 +30,13 @@ function initToDoItems() {
       newListItem.className = item.classes.join(' ')
       newListItem.setAttribute('data-index', item.dataIndex)
       newListItem.innerHTML = `
-        <i class="bi-grip-vertical"></i>
-        <span class="item-description">${item.description}</span>
-        <i class="bi-trash float-end"></i>
-        <i class="bi-check-square-fill float-end pe-1"></i>
-      `
+        <div class="draggable" draggable="true">
+          <i class="bi-grip-vertical"></i>
+          <span class="item-description">${item.description}</span>
+          <i class="bi-trash float-end"></i>
+          <i class="bi-check-square-fill float-end pe-1"></i>
+        </div>
+        `
       listItems.push(newListItem)
       draggableList.appendChild(newListItem)
     }
@@ -74,16 +76,16 @@ function addItem(e) {
   const listItem = document.createElement('li')
   listItem.className = 'list-group-item'
   listItem.setAttribute('data-index', index)
-  listItem.draggable = true
   listItem.innerHTML = `
+    <div class="draggable" draggable="true">
       <i class="bi-grip-vertical"></i>  
       <spand class="item-description">${item}</spand>
       <i class="bi-trash float-end"></i>
       <i class="bi-check-square-fill float-end pe-1"></i>
+    </div>
   `
   listItems.push(listItem)
   draggableList.appendChild(listItem)
-  slist(draggableList)
   document.getElementById('item').value = ""
   // Update localStorage
   updateLocalStorage()
@@ -101,7 +103,6 @@ function completeItem(e) {
       else {
         e.target.parentElement.classList.add('text-decoration-line-through')
       }
-      // Update localStorage
       updateLocalStorage()
     }
   }
@@ -114,7 +115,7 @@ function removeItem(e) {
       alert("Coding is never finished!")
     } else {
       if (confirm('Are you sure?')) {
-        let listItem = e.target.parentElement
+        let listItem = e.target.parentElement.parentElement
         draggableList.removeChild(listItem)
 
         // Update localStorage
@@ -165,71 +166,73 @@ function createList() {
     listItem.className = 'list-group-item'
     listItem.setAttribute('data-index', index)
     listItem.innerHTML = `
-      <i class="bi-grip-vertical"></i>
-      <span class="item-description">${item}</span>
-      <i class="bi-trash float-end"></i>
-      <i class="bi-check-square-fill float-end pe-1"></i>
+      <div class="draggable" draggable="true">
+        <i class="bi-grip-vertical"></i>
+        <span class="item-description">${item}</span>
+        <i class="bi-trash float-end"></i>
+        <i class="bi-check-square-fill float-end pe-1"></i>
+      </div>
     `
     listItems.push(listItem)
     draggableList.appendChild(listItem)
   })
   updateLocalStorage()
+  addEventListeners()
 }
 
-function slist(target) {
-  target.classList.add("slist")
-  let itemsList = target.getElementsByTagName("li"), current = null
+function dragStart() {
+  dragStartIndex = +this.closest('li').getAttribute('data-index')
+}
 
-  for (let item of itemsList) {
-    item.draggable = true
-    
-    item.ondragstart = (ev) => {
-      current = item
-      for (let it of itemsList) {
-        if (it != current) { it.classList.add("hint") }
-      }
-    }
-    item.ondragenter = (ev) => {
-      if (item != current) { item.classList.add("active") }
-    }
+function dragEnter() {
+  this.parentElement.classList.add('over')
+}
 
-    item.ondragleave = () => {
-      item.classList.remove("active")
-    }
+function dragLeave() {
+  this.parentElement.classList.remove('over')
+}
 
-    item.ondragend = () => {
-      for (let it of itemsList) {
-        it.classList.remove("hint")
-        it.classList.remove("active")
-      }
-    }
- 
-    item.ondragover = (evt) => { 
-      evt.preventDefault()
-    }
- 
-    item.ondrop = (evt) => {
-      evt.preventDefault()
-      if (item != current) {
-        let currentpos = 0, droppedpos = 0
-        for (let it=0; it<itemsList.length; it++) {
-          if (current == itemsList[it]) { currentpos = it; }
-          if (item == itemsList[it]) { droppedpos = it; }
-        }
-        if (currentpos < droppedpos) {
-          item.parentNode.insertBefore(current, item.nextSibling);
-        } else {
-          item.parentNode.insertBefore(current, item);
-        }
-      }
-      for (let i = 0; i < draggableList.children.length; i++) {
-        draggableList.children[i].setAttribute('data-index', i)
-        draggableList.children[i].classList.remove('hint')
-        draggableList.children[i].classList.remove('active')
-      }
+function dragOver(e) {
+  e.preventDefault()
+}
 
-      // Update localStorage
-      updateLocalStorage()
-    };
+function dragDrop() {
+  const dragEndIndex = +this.getAttribute('data-index')
+  moveItems(dragStartIndex, dragEndIndex)
+  
+  this.classList.remove('over')
+}
+
+function moveItems(fromIndex, toIndex) {
+  listItems = [...draggableList.querySelectorAll('li')]
+  const item = listItems[fromIndex]
+  
+  draggableList.removeChild(item)
+  draggableList.insertBefore(item, draggableList.children[toIndex])
+  
+  for (let i = 0; i < draggableList.children.length; i++) {
+    draggableList.children[i].setAttribute('data-index', i)
   }
+  
+  listItems = [...draggableList.querySelectorAll('li')]
+  console.log(listItems)
+  console.log(draggableList)
+
+  updateLocalStorage()
+}
+
+function addEventListeners() {
+  const draggables = document.querySelectorAll('.draggable')
+  const dragListItems = document.querySelectorAll('.draggable-list li')
+
+  draggables.forEach(draggable => {
+    draggable.addEventListener('dragstart', dragStart)
+  })
+  
+  dragListItems.forEach(item => {
+    item.addEventListener('dragover', dragOver)
+    item.addEventListener('drop', dragDrop)
+    item.addEventListener('dragenter', dragEnter)
+    item.addEventListener('dragleave', dragLeave)
+  })
 }
